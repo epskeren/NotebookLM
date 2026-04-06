@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מה אפשר לעשות עם NotebookLM בהוראה?</title>
+    
+    <!-- ייבוא פונט למראה נקי ואקדמי -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* איפוס בסיסי והגדרות עמוד עצמאי */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9fbfd;
+            color: #2c3e50;
+            line-height: 1.7;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* עיצוב כותרות */
+        .main-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .main-title h2 {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin: 0 0 10px 0;
+        }
+        .main-title p {
+            font-size: 1.2rem;
+            color: #6c757d;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .title-divider {
+            width: 80px;
+            height: 4px;
+            background-color: #339966;
+            margin: 20px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        /* גריד העמודות */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .column-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .column-icon {
+            padding: 8px;
+            border-radius: 8px;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+        .column-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        /* עיצוב כרטיסיות אינטראקטיביות */
+        .cap-card {
+            width: 100%; 
+            text-align: right; 
+            padding: 14px 20px; 
+            background-color: #ffffff; 
+            border: 1px solid #eef0f2; 
+            border-radius: 12px; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-size: 1.05rem; 
+            color: #34495e; 
+            font-weight: 600; 
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .cap-card:hover {
+            transform: translateY(-4px);
+            border-color: #339966;
+            box-shadow: 0 8px 16px rgba(51, 153, 102, 0.1);
+            color: #155724;
+        }
+        .cap-card-icon {
+            color: #adb5bd;
+            font-size: 1.2rem;
+            transition: color 0.2s ease;
+            font-weight: bold;
+        }
+        .cap-card:hover .cap-card-icon {
+            color: #339966;
+        }
+        
+        /* הערת הבהרה */
+        .disclaimer-note {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.05rem;
+            color: #856404;
+            background-color: #fff3cd;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            border: 1px solid #ffeeba;
+        }
+
+        /* מודאל (חלון קופץ) */
+        .cap-modal-overlay {
+            position: fixed; 
+            top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(0,0,0,0.6); 
+            z-index: 9999; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .cap-modal-box {
+            background: #ffffff; 
+            width: 90%; 
+            max-width: 550px; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            text-align: right;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .cap-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .cap-modal-overlay.active .cap-modal-box {
+            transform: scale(1);
+        }
+        
+        /* מניעת גלילה כשהמודאל פתוח */
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        /* פריטי המודאל הפנימיים */
+        .modal-header {
+            background-color: #339966; 
+            padding: 20px 25px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        .modal-title {
+            margin: 0; 
+            color: #ffffff; 
+            font-size: 1.5rem; 
+            font-weight: 700;
+        }
+        .modal-close-btn {
+            background: none; 
+            border: none; 
+            color: #ffffff; 
+            font-size: 2rem; 
+            cursor: pointer; 
+            line-height: 1; 
+            padding: 0;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .modal-close-btn:hover {
+            opacity: 1;
+        }
+        .modal-content {
+            padding: 30px 25px; 
+            max-height: 75vh; 
+            overflow-y: auto;
+        }
+        .modal-section-title {
+            color: #2c3e50; 
+            font-weight: 700; 
+            font-size: 1.25rem; 
+            margin-top: 0; 
+            margin-bottom: 15px; 
+            border-bottom: 3px solid #e2f0e4; 
+            padding-bottom: 5px; 
+            display: inline-block;
+        }
+        .tag-style {
+            background-color: #e2f0e4; 
+            color: #155724; 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-size: 0.95rem; 
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- כותרת ראשית -->
+    <div class="main-title">
+        <h2>מה אפשר לעשות עם NotebookLM בהוראה?</h2>
+        <p>
+            לפניכם מגוון יכולות ותוצרים שניתן להפיק מהחומרים שלכם. בחרו את מה שמעניין אתכם כדי לראות איך הכלי משתלב בעשייה האקדמית.
+        </p>
+        <div class="title-divider"></div>
+    </div>
+
+    <!-- גריד העמודות -->
+    <div class="grid-container">
+        
+        <!-- עמודה 1: צ'אט -->
+        <div>
+            <div class="column-header">
+                <span class="column-icon" style="background-color: #e2f0e4;">💬</span>
+                <h3 class="column-title" style="color: #194d29;">יכולות צ'אט</h3>
+            </div>
+            
+            <button class="cap-card" onclick="openCapModal('chat_1')">
+                <span>סיכום לשיעור</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('chat_2')">
+                <span>יצירת שאלות לסטודנטים</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('chat_3')">
+                <span>הסבר מושגים מורכבים</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('chat_4')">
+                <span>השוואה בין מקורות</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('chat_5')">
+                <span>מענה לשאלה מבוססת מקור</span><span class="cap-card-icon">❮</span>
+            </button>
+        </div>
+
+        <!-- עמודה 2: סטודיו (מכיל את כל 9 הפיצ'רים) -->
+        <div>
+            <div class="column-header">
+                <span class="column-icon" style="background-color: #eef1fa;">✨</span>
+                <h3 class="column-title" style="color: #243a73;">יכולות סטודיו</h3>
+            </div>
+            
+            <button class="cap-card" onclick="openCapModal('studio_1')">
+                <span>🎧 סקירה קולית (Audio Overview)</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('studio_2')">
+                <span>🔀 מפת חשיבה (Mind Map)</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('studio_3')">
+                <span>📄 דוחות וסיכומים (Reports)</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('studio_4')">
+                <span>🗂️ כרטיסיות למידה (Flashcards)</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('studio_5')">
+                <span>📝 בוחן (Quiz)</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('studio_6')">
+                <span>🎞️ שלד למצגת (Slide Deck)</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('studio_7')">
+                <span>🎥 תקציר וידאו (Video Overview)</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('studio_8')">
+                <span>📊 אינפוגרפיקה (Infographic)</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('studio_9')">
+                <span>📈 טבלת נתונים (Data Table)</span><span class="cap-card-icon">❮</span>
+            </button>
+        </div>
+
+        <!-- עמודה 3: סטודנטים -->
+        <div>
+            <div class="column-header">
+                <span class="column-icon" style="background-color: #f3ecef;">🎓</span>
+                <h3 class="column-title" style="color: #6c2e64;">שיתוף עם סטודנטים</h3>
+            </div>
+            
+            <button class="cap-card" onclick="openCapModal('students_1')">
+                <span>שיתוף צ'אט בלבד</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('students_2')">
+                <span>שיחה של סטודנטים עם חומרים</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('students_3')">
+                <span>תמיכה בלמידה עצמאית</span><span class="cap-card-icon">❮</span>
+            </button>
+            <button class="cap-card" onclick="openCapModal('students_4')">
+                <span>שימוש במערכת כחלק ממטלה</span><span class="cap-card-icon">❮</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- הערת הבהרה מרכזית -->
+    <div style="text-align: center;">
+        <div class="disclaimer-note">
+            <strong>💡 חשוב לדעת:</strong> המערכת מתעדכנת תדיר ביכולות נוספות.
+        </div>
+    </div>
+
+</div>
+
+<!-- מבנה המודאל (נסתר כברירת מחדל) -->
+<div id="cap-modal" class="cap-modal-overlay" onclick="closeCapModal(event)">
+    <div class="cap-modal-box" onclick="event.stopPropagation()">
+        <!-- כותרת המודאל -->
+        <div class="modal-header">
+            <h3 id="cap-modal-title" class="modal-title">כותרת</h3>
+            <button onclick="closeCapModal()" class="modal-close-btn">&times;</button>
+        </div>
+        
+        <!-- תוכן המודאל -->
+        <div class="modal-content">
+            
+            <!-- מה מתקבל -->
+            <div style="margin-bottom: 25px;">
+                <h4 class="modal-section-title">מה מתקבל?</h4>
+                <ul id="cap-modal-received" style="color: #34495e; font-size: 1.1rem; padding-right: 25px; margin: 0; line-height: 1.6;"></ul>
+            </div>
+            
+            <!-- למה זה חשוב פדגוגית -->
+            <div style="margin-bottom: 30px;">
+                <h4 class="modal-section-title">למה זה חשוב פדגוגית?</h4>
+                <p id="cap-modal-pedagogy" style="color: #34495e; font-size: 1.1rem; font-style: italic; margin: 0; line-height: 1.6;"></p>
+            </div>
+            
+            <!-- שימוש מיידי (Callout) -->
+            <div style="background-color: #f0f7f3; border-right: 4px solid #339966; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+                <h4 style="color: #155724; font-weight: bold; font-size: 1.15rem; margin-top: 0; margin-bottom: 8px;">שימוש מיידי בפועל</h4>
+                <p id="cap-modal-usage" style="color: #155724; font-size: 1.05rem; margin: 0; line-height: 1.6;"></p>
+            </div>
+            
+            <!-- תגיות -->
+            <div id="cap-modal-tags" style="display: flex; flex-wrap: wrap; gap: 10px; border-top: 1px solid #eef0f2; padding-top: 20px;"></div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    // מאגר הנתונים לכרטיסיות
+    const capData = {
+        // צ'אט
+        "chat_1": {
+            title: "סיכום לשיעור",
+            received: ["סיכום מקיף ומובנה של המקורות שהועלו", "חלוקה לנושאים מרכזיים", "מיפוי מושגי מפתח"],
+            pedagogy: "ארגון ידע מקטין עומס קוגניטיבי ומאפשר לסטודנטים להתמקד בעיקר.",
+            usage: "העלאת מצגת ופרק מספר וקבלת דף 'סיכום מנהלים' לחלוקה בסוף ההרצאה.",
+            tags: ["חוסך זמן", "ארגון ידע"]
+        },
+        "chat_2": {
+            title: "יצירת שאלות לסטודנטים",
+            received: ["בנק שאלות המבוססות ישירות על חומרי הקורס", "חלוקה לפי רמות קושי", "תשובות ונימוקים מהטקסט"],
+            pedagogy: "שאילת שאלות היא כלי קריטי לעידוד חשיבה פעילה ובדיקת הבנה בזמן אמת.",
+            usage: "יצירת שאלות מרובות-ברירה (קליקרים) לשימוש במהלך ההרצאה כדי לוודא שהסטודנטים איתך.",
+            tags: ["הערכה", "חוסך זמן"]
+        },
+        "chat_3": {
+            title: "הסבר מושגים מורכבים",
+            received: ["פישוט הגדרות טכניות קשות", "שימוש באנלוגיות מותאמות", "קישור להקשר הקורס"],
+            pedagogy: "הנגשת מושגים מופשטים באמצעות הקשרים מוכרים משפרת את הזיכרון לטווח ארוך.",
+            usage: "בקשה מהכלי להסביר מושג הנדסי או תיאורטי סבוך 'כאילו הייתי סטודנט שנה א'.",
+            tags: ["לסטודנטים", "הנגשת ידע"]
+        },
+        "chat_4": {
+            title: "השוואה בין מקורות",
+            received: ["טבלת השוואה או תיאור הבדלים", "זיהוי סתירות בין מחברים", "סינתזה של רעיונות משותפים"],
+            pedagogy: "מפתח חשיבה ביקורתית ויכולת ניתוח גבוהה של חומר אקדמי.",
+            usage: "העלאת שני מאמרים בנושא דומה וקבלת סיכום של נקודות המחלוקת ביניהם.",
+            tags: ["חשיבה ביקורתית", "ארגון ידע"]
+        },
+        "chat_5": {
+            title: "מענה לשאלה מבוססת מקור",
+            received: ["תשובה מדויקת המסתמכת רק על המקורות", "ציון מראה מקום מדויק (Citations)", "הימנעות מהמצאות של ה-AI"],
+            pedagogy: "מבטיח אמינות אקדמית ומונע בלבול בקרב הסטודנטים.",
+            usage: "מרצה המשתמש בכלי כ'עוזר הוראה' למציאת תשובה מהירה לסטודנט מתוך סילבוס או מקראה עמוסה.",
+            tags: ["דיוק", "חוסך זמן"]
+        },
+
+        // סטודיו (כלל הפיצ'רים)
+        "studio_1": {
+            title: "סקירה קולית (Audio Overview)",
+            received: ["שיחה קולית המסכמת את החומר", "דיאלוג קולח בין שתי דמויות", "דגשים על הנקודות המעניינות בחומר"],
+            pedagogy: "מולטי-מודליות: הנגשת החומר בפורמט שמע המותאם ללמידה בדרכים (למידה שמיעתית).",
+            usage: "יצירת 'סיכום קולי' למאמר (פודקאסט), המאפשר לסטודנטים להבין את הרעיון הכללי בהאזנה בדרך לקמפוס.",
+            tags: ["נגישות", "לסטודנטים"]
+        },
+        "studio_2": {
+            title: "מפת חשיבה (Mind Map)",
+            received: ["ייצוג ויזואלי של הקשרים בין נושאים", "מפת מושגים היררכית", "אשכולות של תחומי משנה"],
+            pedagogy: "למידה ויזואלית מסייעת לסטודנטים לראות את 'התמונה הגדולה' ולא רק פרטים בודדים.",
+            usage: "יצירת מפת חשיבה של נושא הקורס לשימוש כעזר ויזואלי בשקף הפתיחה של השיעור הראשון.",
+            tags: ["ויזואליזציה", "ארגון ידע"]
+        },
+        "studio_3": {
+            title: "דוחות וסיכומים (Reports)",
+            received: ["מסמך טקסטואלי מורחב ומאורגן", "אינטגרציה של מידע ממספר מקורות", "חלוקה לראשי פרקים"],
+            pedagogy: "חיבור רעיונות לכדי נרטיב אחד מסודר עוזר לסטודנטים שניגשים לבחינה ולעיבוד חומר רב.",
+            usage: "יצירת חומר רקע עשיר לחלוקה כהכנה לשיעור, או מסמך 'מנהלים' המאגד את כל מאמרי הסמסטר.",
+            tags: ["סיכום", "לסטודנטים"]
+        },
+        "studio_4": {
+            title: "כרטיסיות למידה (Flashcards)",
+            received: ["כרטיסיות אינטראקטיביות (שאלה בצד אחד, תשובה בשני)", "אנימציית היפוך", "מיקוד במונחים ותאריכים"],
+            pedagogy: "תמיכה מוכחת מחקרית בתהליכי 'שליפה פעילה' (Active Recall) לשינון ידע בסיסי.",
+            usage: "יצירת מאגר מונחי יסוד משחקי שהסטודנטים חייבים להכיר בעל-פה לקראת מבחן המושגים.",
+            tags: ["לסטודנטים", "שינון"]
+        },
+        "studio_5": {
+            title: "בוחן (Quiz)",
+            received: ["יצירה אוטומטית של שאלות אמריקאיות", "הסבר ומשוב לכל תשובה נכונה", "מסיחים (תשובות שגויות) מוכנים"],
+            pedagogy: "הערכה מעצבת מאפשרת לסטודנט לזהות פערים בלמידה מוקדם ככל האפשר.",
+            usage: "יצירת בוחן תרגול קצר להעלאה ל-Moodle או כ'כרטיס יציאה' בסיום השיעור.",
+            tags: ["הערכה", "לסטודנטים"]
+        },
+        "studio_6": {
+            title: "שלד למצגת (Slide Deck)",
+            received: ["שלד (Outline) טקסטואלי המחולק לשקופיות", "הצעות לטקסט שיופיע על המסך", "קריינות (הערות) למרצה"],
+            pedagogy: "תכנון נרטיב וזרימה לוגית טרם עיצוב המצגת, משפר דרמטית את איכות העברת המסר בכיתה.",
+            usage: "בניית הרצאה חדשה מאפס מתוך אסופת מאמרים, והעתקת הטקסט ל-PowerPoint מעוצב.",
+            tags: ["תכנון שיעור", "חוסך זמן"]
+        },
+        "studio_7": {
+            title: "תקציר וידאו (Video Overview)",
+            received: ["סרטון וידאו קצר מבוסס AI", "ויזואליה אוטומטית", "קריינות או כתוביות (בהתאם לזמינות המערכת)"],
+            pedagogy: "וידאו קצר בתחילת שיעור מעורר סקרנות, מקרקע את הקשב ומשמש כ'שבירת קרח' מושלמת.",
+            usage: "הקרנת טיזר ויזואלי בן דקה בתחילת נושא חדש בכיתה כדי למשוך את תשומת לב הסטודנטים.",
+            tags: ["מולטי-מודליות", "מעורבות"]
+        },
+        "studio_8": {
+            title: "אינפוגרפיקה (Infographic)",
+            received: ["קובץ תמונה (PNG/JPG)", "סיכום חזותי או תרשים זרימה", "שילוב אלמנטים גרפיים וטקסט"],
+            pedagogy: "המרת טקסט מורכב לתוצר חזותי תומכת בלומדים ויזואליים ומארגנת שלבים של תהליכים ארוכים.",
+            usage: "יצירת פוסטר השוואתי למודלים מתוך החומר או הדפסת תרשים זרימה לחלוקה כ'דף עזר'.",
+            tags: ["ויזואליזציה", "לסטודנטים"]
+        },
+        "studio_9": {
+            title: "טבלת נתונים (Data Table)",
+            received: ["טבלה טקסטואלית מובנית", "ארגון נתונים לפי עמודות רלוונטיות", "השוואה נקודתית"],
+            pedagogy: "טבלאות השוואה מארגנות ידע עמוס, מזקקות את 'השורה התחתונה' ומפחיתות חרדה לפני בחינות.",
+            usage: "השוואה בין מספר גישות, היסטוריונים או תיאוריות, והעתקה ישירה לקובץ Word/Excel.",
+            tags: ["ארגון ידע", "חוסך זמן"]
+        },
+
+        // סטודנטים
+        "students_1": {
+            title: "שיתוף צ'אט בלבד",
+            received: ["קישור ישיר לשיחה ספציפית עם הכלי", "הצגת הדרך שבה המרצה שואל שאלות", "שיתוף תובנות נבחרות ללא המקורות"],
+            pedagogy: "מידול (Modeling): המרצה מדגים לסטודנטים איך לשאול את ה-AI שאלות מקצועיות נכונות.",
+            usage: "שיתוף שיחה שבה המרצה 'מאתגר' את הטקסט, כדי להוות השראה לחשיבה ביקורתית.",
+            tags: ["מידול", "לסטודנטים"]
+        },
+        "students_2": {
+            title: "שיחה של סטודנטים עם חומרים",
+            received: ["סביבה בטוחה לסטודנטים לשאול שאלות", "תשובות מבוססות על המקורות שהמרצה אישר", "צמצום פערים אישיים"],
+            pedagogy: "מאפשר למידה מותאמת אישית בקצב של הסטודנט, ללא חשש 'לשאול שאלות טיפשיות' בכיתה.",
+            usage: "יצירת מחברת משותפת לקראת המבחן שבה הסטודנטים יכולים 'לחקור' את כל חומרי הסמסטר.",
+            tags: ["למידה אישית", "לסטודנטים"]
+        },
+        "students_3": {
+            title: "תמיכה בלמידה עצמאית",
+            received: ["כלים לסיכום עצמי של מאמרים", "אפשרות לביקורת על הבנה אישית", "הכוונה למקורות הרלוונטיים"],
+            pedagogy: "פיתוח לומד עצמאי המסוגל להתמודד עם טקסטים אקדמיים מורכבים בכוחות עצמו.",
+            usage: "מתן משימה לסטודנטים לסכם מאמר מורכב באמצעות הכלי ולהגיש רפלקציה על התהליך.",
+            tags: ["למידה עצמאית", "אקדמי"]
+        },
+        "students_4": {
+            title: "שימוש במערכת כחלק ממטלה",
+            received: ["שילוב הכלי כחלק אינטגרלי מהתהליך הלימודי", "בדיקת תוצרי AI מול הבנה אנושית", "מטלות מורכבות יותר"],
+            pedagogy: "הכנת הסטודנטים לעבודה בעולם האמיתי שבו AI הוא כלי עבודה סטנדרטי (אוריינות AI).",
+            usage: "מטלה שבה הסטודנט מתבקש להפיק סיכום מהכלי ואז לכתוב פסקת ביקורת: מה הכלי פספס או במה הוא טעה.",
+            tags: ["הערכה", "אוריינות AI"]
+        }
+    };
+
+    // פונקציות פתיחה וסגירה של המודאל
+    function openCapModal(id) {
+        const item = capData[id];
+        if(!item) return;
+        
+        // עדכון התוכן
+        document.getElementById('cap-modal-title').innerText = item.title;
+        document.getElementById('cap-modal-received').innerHTML = item.received.map(t => `<li style="margin-bottom: 8px;">${t}</li>`).join('');
+        document.getElementById('cap-modal-pedagogy').innerText = item.pedagogy;
+        document.getElementById('cap-modal-usage').innerText = item.usage;
+        
+        // עדכון תגיות
+        document.getElementById('cap-modal-tags').innerHTML = item.tags.map(t => 
+            `<span class="tag-style"># ${t}</span>`
+        ).join('');
+        
+        // הצגת המודאל
+        const modal = document.getElementById('cap-modal');
+        modal.classList.add('active');
+        document.body.classList.add('modal-open');
+    }
+
+    function closeCapModal(event) {
+        // סגירה רק אם לחצו על הרקע הכהה או על כפתור הסגירה
+        if (event && event.target !== event.currentTarget) return;
+        
+        const modal = document.getElementById('cap-modal');
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    }
+
+    // סגירה עם מקש Escape
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeCapModal();
+        }
+    });
+</script>
+
+</body>
+</html>
