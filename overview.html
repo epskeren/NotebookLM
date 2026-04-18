@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מה אפשר לעשות עם NotebookLM בהוראה?</title>
+    <title>מפת היכולות של NotebookLM</title>
     
     <!-- ייבוא גופן Heebo -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* איפוס בסיסי והגדרות עמוד עצמאי */
+        /* איפוס בסיסי והגדרות עמוד */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f9fbfd;
+            background-color: #ffffff;
             color: #2c3e50;
             line-height: 1.7;
         }
@@ -28,22 +28,22 @@
         /* עיצוב כותרות */
         .main-title {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
         .main-title h2 {
-            color: #2c3e50;
+            color: #339966;
             font-weight: 700;
             font-size: 2.2rem;
             margin: 0 0 10px 0;
         }
         .main-title p {
             font-size: 1.2rem;
-            color: #6c757d;
-            max-width: 700px;
+            color: #34495e;
+            max-width: 800px;
             margin: 0 auto;
         }
         .title-divider {
-            width: 80px;
+            width: 60px;
             height: 4px;
             background-color: #339966;
             margin: 20px auto 0 auto;
@@ -53,43 +53,44 @@
         /* גריד העמודות */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
             margin-bottom: 30px;
         }
 
         .column-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eef0f2;
+            padding-bottom: 15px;
         }
         .column-icon {
-            padding: 8px;
             border-radius: 8px;
-            margin-left: 10px;
+            margin-left: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             line-height: 1;
         }
         .column-title {
             font-weight: 700;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             margin: 0;
         }
 
-        /* עיצוב כרטיסיות אינטראקטיביות (מעודכן לפריסה אופקית קומפקטית) */
+        /* עיצוב כרטיסיות אינטראקטיביות */
         .cap-card {
             width: 100%; 
             text-align: right; 
             padding: 16px 20px; 
             background-color: #ffffff; 
             border: 1px solid #eef0f2; 
-            border-radius: 16px; 
+            border-radius: 12px; 
             margin-bottom: 15px; 
             cursor: pointer; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
@@ -97,18 +98,17 @@
             transition: all 0.2s ease;
         }
         .cap-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
-            filter: brightness(0.97);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+            border-color: #d1d9e0;
         }
         
-        /* סידור פנימי של התוכן בכרטיסייה (אימוג'י לצד טקסט) */
         .cap-card-content {
             display: flex;
             align-items: center;
         }
         .cap-card-emoji {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             margin-left: 15px;
             line-height: 1;
         }
@@ -118,49 +118,57 @@
         }
         .cap-card-title {
             font-weight: bold;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             margin-bottom: 2px;
             line-height: 1.2;
+            color: #2c3e50;
         }
         .cap-card-subtitle {
             font-size: 0.9rem;
-            opacity: 0.85;
+            color: #6c757d;
             line-height: 1.2;
         }
 
         /* חץ החיווי */
         .cap-card-icon {
-            opacity: 0.7;
+            opacity: 0.5;
             display: flex;
             align-items: center;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+            transition: all 0.2s ease;
+            color: #2c3e50;
         }
         .cap-card:hover .cap-card-icon {
             opacity: 1;
-            transform: translateX(-4px); /* תזוזה קלה שמאלה (קדימה) בריחוף */
+            transform: translateX(-5px);
             color: #339966;
         }
         
+        /* עיצוב ספציפי לעמודות בריחוף - ירוק אחיד לכולן */
+        .col-1 .cap-card:hover, .col-2 .cap-card:hover, .col-3 .cap-card:hover { 
+            background-color: #fdfdfd; 
+            border-color: #e2f0e4; 
+        }
+
         /* מודאל (חלון קופץ) */
         .cap-modal-overlay {
             position: fixed; 
             top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(0,0,0,0.6); 
+            background: rgba(0,0,0,0.5); 
             z-index: 9999; 
             display: none; 
             align-items: center; 
             justify-content: center; 
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(3px);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
         .cap-modal-box {
             background: #ffffff; 
             width: 90%; 
-            max-width: 550px; 
+            max-width: 580px; 
             border-radius: 16px; 
             overflow: hidden; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
             text-align: right;
             transform: scale(0.95);
             transition: transform 0.3s ease;
@@ -173,12 +181,9 @@
             transform: scale(1);
         }
         
-        /* מניעת גלילה כשהמודאל פתוח */
-        body.modal-open {
-            overflow: hidden;
-        }
+        body.modal-open { overflow: hidden; }
 
-        /* פריטי המודאל הפנימיים */
+        /* תוכן המודאל */
         .modal-header {
             background-color: #339966; 
             padding: 20px 25px; 
@@ -191,6 +196,8 @@
             color: #ffffff; 
             font-size: 1.5rem; 
             font-weight: 700;
+            display: flex;
+            align-items: center;
         }
         .modal-close-btn {
             background: none; 
@@ -203,31 +210,67 @@
             opacity: 0.8;
             transition: opacity 0.2s;
         }
-        .modal-close-btn:hover {
-            opacity: 1;
-        }
+        .modal-close-btn:hover { opacity: 1; }
+        
         .modal-content {
             padding: 30px 25px; 
-            max-height: 75vh; 
+            max-height: 70vh; 
             overflow-y: auto;
         }
         .modal-section-title {
             color: #2c3e50; 
             font-weight: 700; 
-            font-size: 1.25rem; 
+            font-size: 1.2rem; 
             margin-top: 0; 
-            margin-bottom: 15px; 
-            border-bottom: 3px solid #e2f0e4; 
-            padding-bottom: 5px; 
-            display: inline-block;
+            margin-bottom: 12px; 
+            display: flex;
+            align-items: center;
+        }
+        .modal-list {
+            color: #34495e; 
+            font-size: 1.1rem; 
+            padding-right: 20px; 
+            margin: 0 0 25px 0; 
+            line-height: 1.7;
+        }
+        
+        /* עיצוב הדגש הפדגוגי והפרקטי */
+        .modal-highlight-box {
+            background-color: #f0f7f3; 
+            border-right: 4px solid #339966; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            margin-bottom: 25px;
+        }
+        .modal-highlight-title {
+            color: #155724; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            margin-top: 0; 
+            margin-bottom: 5px;
+        }
+        .modal-highlight-text {
+            color: #155724; 
+            font-size: 1.05rem; 
+            margin: 0; 
+            line-height: 1.6;
+        }
+
+        .tag-container {
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            border-top: 1px solid #eef0f2; 
+            padding-top: 20px;
         }
         .tag-style {
-            background-color: #e2f0e4; 
-            color: #155724; 
-            padding: 6px 14px; 
-            border-radius: 20px; 
-            font-size: 0.95rem; 
+            background-color: #f8f9fa; 
+            color: #6c757d; 
+            padding: 5px 12px; 
+            border-radius: 6px; 
+            font-size: 0.9rem; 
             font-weight: 600;
+            border: 1px solid #eef0f2;
         }
     </style>
 </head>
@@ -237,243 +280,239 @@
     
     <!-- כותרת ראשית -->
     <div class="main-title">
-        <h2>מה אפשר לעשות עם NotebookLM בהוראה?</h2>
-        <p>
-            לפניכם מגוון יכולות ותוצרים שניתן להפיק מהחומרים שלכם. בחרו את מה שמעניין אתכם כדי לראות איך הכלי משתלב בעשייה האקדמית.
-        </p>
+        <h2>מפת היכולות של הקורס</h2>
+        <p>לחצו על כל אחת מהיכולות כדי להבין כיצד היא משתלבת בהוראה, מה בדיוק מתקבל ממנה, ולקבל דוגמה פרקטית ליישום מיידי.</p>
         <div class="title-divider"></div>
-    </div>
-
-    <!-- הערת הבהרה -->
-    <div style="text-align: center; margin-bottom: 35px; color: #6c757d; font-size: 0.95rem;">
-        * חשוב לדעת: המערכת מתעדכנת תדיר ביכולות נוספות.
     </div>
 
     <!-- גריד העמודות -->
     <div class="grid-container">
         
-        <!-- עמודה 1: צ'אט -->
-        <div>
+        <!-- עמודה 1: עבודה עם מקורות (יחידות 1-2) -->
+        <div class="col-1">
             <div class="column-header">
-                <span class="column-icon" style="background-color: #e2f0e4;">💬</span>
-                <h3 class="column-title" style="color: #194d29;">יכולות צ'אט</h3>
+                <h3 class="column-title" style="color: #339966;">עבודה עם מקורות (הצ'אט)</h3>
             </div>
             
-            <button class="cap-card" onclick="openCapModal('chat_1')" style="color: #2c3e50;">
+            <button class="cap-card" onclick="openCapModal('chat_summary')">
                 <div class="cap-card-content">
-                    <span class="cap-card-emoji">📝</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">סיכום לשיעור</span>
-                        <span class="cap-card-subtitle">Lesson Summary</span>
+                        <span class="cap-card-title">סיכום ומיפוי ידע</span>
+                        <span class="cap-card-subtitle">יחידה 1</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+            </button>
+
+            <button class="cap-card" onclick="openCapModal('chat_citations')">
+                <div class="cap-card-content">
+                    <div class="cap-card-text">
+                        <span class="cap-card-title">חקירה ואיתור ציטוטים</span>
+                        <span class="cap-card-subtitle">יחידה 1</span>
+                    </div>
+                </div>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
             
-            <button class="cap-card" onclick="openCapModal('chat_2')" style="color: #2c3e50;">
+            <button class="cap-card" onclick="openCapModal('chat_compare')">
                 <div class="cap-card-content">
-                    <span class="cap-card-emoji">❓</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">יצירת שאלות</span>
-                        <span class="cap-card-subtitle">Question Generation</span>
+                        <span class="cap-card-title">השוואה וסינתזה</span>
+                        <span class="cap-card-subtitle">יחידה 2</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+            </button>
+
+            <button class="cap-card" onclick="openCapModal('chat_filter')">
+                <div class="cap-card-content">
+                    <div class="cap-card-text">
+                        <span class="cap-card-title">סינון ומיקוד מקורות</span>
+                        <span class="cap-card-subtitle">יחידה 2</span>
+                    </div>
+                </div>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
             
-            <button class="cap-card" onclick="openCapModal('chat_3')" style="color: #2c3e50;">
+            <button class="cap-card" onclick="openCapModal('chat_notes')">
                 <div class="cap-card-content">
-                    <span class="cap-card-emoji">💡</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">הסבר מושגים מורכבים</span>
-                        <span class="cap-card-subtitle">Concept Explanation</span>
+                        <span class="cap-card-title">ניהול תובנות בפתקיות</span>
+                        <span class="cap-card-subtitle">יחידה 2</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            </button>
-            
-            <button class="cap-card" onclick="openCapModal('chat_4')" style="color: #2c3e50;">
-                <div class="cap-card-content">
-                    <span class="cap-card-emoji">⚖️</span>
-                    <div class="cap-card-text">
-                        <span class="cap-card-title">השוואה בין מקורות</span>
-                        <span class="cap-card-subtitle">Source Comparison</span>
-                    </div>
-                </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            </button>
-            
-            <button class="cap-card" onclick="openCapModal('chat_5')" style="color: #2c3e50;">
-                <div class="cap-card-content">
-                    <span class="cap-card-emoji">🎯</span>
-                    <div class="cap-card-text">
-                        <span class="cap-card-title">מענה מבוסס מקור</span>
-                        <span class="cap-card-subtitle">Source-Based Q&A</span>
-                    </div>
-                </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
         </div>
 
-        <!-- עמודה 2: סטודיו -->
-        <div>
+        <!-- עמודה 2: שיתוף סטודנטים (יחידה 3) -->
+        <div class="col-2">
             <div class="column-header">
-                <span class="column-icon" style="background-color: #eef1fa;">✨</span>
-                <h3 class="column-title" style="color: #243a73;">יכולות סטודיו</h3>
+                <h3 class="column-title" style="color: #339966;">סביבת הסטודנט ושיתוף</h3>
             </div>
             
-            <button class="cap-card" onclick="openCapModal('studio_1')" style="background-color: #eef1fa; color: #243a73; border: none;">
+            <button class="cap-card" onclick="openCapModal('students_configure')">
+                <div class="cap-card-content">
+                    <div class="cap-card-text">
+                        <span class="cap-card-title">הגדרת אישיות הצ'אט</span>
+                        <span class="cap-card-subtitle">יחידה 3</span>
+                    </div>
+                </div>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+            </button>
+            
+            <button class="cap-card" onclick="openCapModal('students_customise')">
+                <div class="cap-card-content">
+                    <div class="cap-card-text">
+                        <span class="cap-card-title">עיצוב והודעת פתיחה</span>
+                        <span class="cap-card-subtitle">יחידה 3</span>
+                    </div>
+                </div>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+            </button>
+            
+            <button class="cap-card" onclick="openCapModal('students_share_full')">
+                <div class="cap-card-content">
+                    <div class="cap-card-text">
+                        <span class="cap-card-title">שיתוף מחברת מלאה</span>
+                        <span class="cap-card-subtitle">יחידה 3</span>
+                    </div>
+                </div>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+            </button>
+            
+            <button class="cap-card" onclick="openCapModal('students_share_chat')">
+                <div class="cap-card-content">
+                    <div class="cap-card-text">
+                        <span class="cap-card-title">שיתוף תצוגת צ'אט (Chat View)</span>
+                        <span class="cap-card-subtitle">יחידה 3</span>
+                    </div>
+                </div>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+            </button>
+        </div>
+
+        <!-- עמודה 3: הסטודיו (יחידה 4) - 9 פיצ'רים -->
+        <div class="col-3">
+            <div class="column-header">
+                <h3 class="column-title" style="color: #339966;">הפקת תוצרים (סטודיו)</h3>
+            </div>
+            
+            <!-- 1. Audio Overview -->
+            <button class="cap-card" onclick="openCapModal('studio_audio')">
                 <div class="cap-card-content">
                     <span class="cap-card-emoji">🎧</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">סקירה קולית</span>
-                        <span class="cap-card-subtitle">Audio Overview</span>
+                        <span class="cap-card-title">סקירה קולית (פודקאסט)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
-            
-            <button class="cap-card" onclick="openCapModal('studio_2')" style="background-color: #f3ecef; color: #6c2e64; border: none;">
-                <div class="cap-card-content">
-                    <span class="cap-card-emoji">🔀</span>
-                    <div class="cap-card-text">
-                        <span class="cap-card-title">מפת חשיבה</span>
-                        <span class="cap-card-subtitle">Mind Map</span>
-                    </div>
-                </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            </button>
-            
-            <button class="cap-card" onclick="openCapModal('studio_3')" style="background-color: #f4f0e3; color: #6f5d2b; border: none;">
-                <div class="cap-card-content">
-                    <span class="cap-card-emoji">📄</span>
-                    <div class="cap-card-text">
-                        <span class="cap-card-title">דוחות וסיכומים</span>
-                        <span class="cap-card-subtitle">Reports</span>
-                    </div>
-                </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            </button>
-            
-            <button class="cap-card" onclick="openCapModal('studio_4')" style="background-color: #f6ebea; color: #712b29; border: none;">
-                <div class="cap-card-content">
-                    <span class="cap-card-emoji">🗂️</span>
-                    <div class="cap-card-text">
-                        <span class="cap-card-title">כרטיסיות למידה</span>
-                        <span class="cap-card-subtitle">Flashcards</span>
-                    </div>
-                </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            </button>
-            
-            <button class="cap-card" onclick="openCapModal('studio_5')" style="background-color: #e1f4f5; color: #094e61; border: none;">
-                <div class="cap-card-content">
-                    <span class="cap-card-emoji">📝</span>
-                    <div class="cap-card-text">
-                        <span class="cap-card-title">בוחן</span>
-                        <span class="cap-card-subtitle">Quiz</span>
-                    </div>
-                </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            </button>
-            
-            <button class="cap-card" onclick="openCapModal('studio_6')" style="background-color: #f4f0e3; color: #6f5d2b; border: none;">
+
+            <!-- 2. Slide Deck -->
+            <button class="cap-card" onclick="openCapModal('studio_slidedeck')">
                 <div class="cap-card-content">
                     <span class="cap-card-emoji">🎞️</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">שלד למצגת</span>
-                        <span class="cap-card-subtitle">Slide deck</span>
+                        <span class="cap-card-title">שלד למצגת (Slide Deck)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
-            
-            <button class="cap-card" onclick="openCapModal('studio_7')" style="background-color: #e2f0e4; color: #194d29; border: none;">
+
+            <!-- 3. Video Overview -->
+            <button class="cap-card" onclick="openCapModal('studio_video')">
                 <div class="cap-card-content">
                     <span class="cap-card-emoji">🎥</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">תקציר וידאו</span>
-                        <span class="cap-card-subtitle">Video Overview</span>
+                        <span class="cap-card-title">תקציר וידאו (Video)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
-            
-            <button class="cap-card" onclick="openCapModal('studio_8')" style="background-color: #f3ecef; color: #6c2e64; border: none;">
-                <div class="cap-card-content">
-                    <span class="cap-card-emoji">📊</span>
-                    <div class="cap-card-text">
-                        <span class="cap-card-title">אינפוגרפיקה</span>
-                        <span class="cap-card-subtitle">Infographic</span>
-                    </div>
-                </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            </button>
-            
-            <button class="cap-card" onclick="openCapModal('studio_9')" style="background-color: #eef1fa; color: #243a73; border: none;">
-                <div class="cap-card-content">
-                    <span class="cap-card-emoji">📈</span>
-                    <div class="cap-card-text">
-                        <span class="cap-card-title">טבלת נתונים</span>
-                        <span class="cap-card-subtitle">Data table</span>
-                    </div>
-                </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
-            </button>
-        </div>
 
-        <!-- עמודה 3: סטודנטים -->
-        <div>
-            <div class="column-header">
-                <span class="column-icon" style="background-color: #f3ecef;">🎓</span>
-                <h3 class="column-title" style="color: #6c2e64;">שיתוף עם סטודנטים</h3>
-            </div>
-            
-            <button class="cap-card" onclick="openCapModal('students_1')" style="color: #2c3e50;">
+            <!-- 4. Mind Map -->
+            <button class="cap-card" onclick="openCapModal('studio_mindmap')">
                 <div class="cap-card-content">
-                    <span class="cap-card-emoji">🔗</span>
+                    <span class="cap-card-emoji">🔀</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">שיתוף צ'אט בלבד</span>
-                        <span class="cap-card-subtitle">Share Chat</span>
+                        <span class="cap-card-title">מפת חשיבה (Mind Map)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
-            
-            <button class="cap-card" onclick="openCapModal('students_2')" style="color: #2c3e50;">
+
+            <!-- 5. Reports -->
+            <button class="cap-card" onclick="openCapModal('studio_reports')">
                 <div class="cap-card-content">
-                    <span class="cap-card-emoji">💬</span>
+                    <span class="cap-card-emoji">📄</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">שיחה של סטודנטים עם החומר</span>
-                        <span class="cap-card-subtitle">Student Interaction</span>
+                        <span class="cap-card-title">דוחות (Reports)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
             
-            <button class="cap-card" onclick="openCapModal('students_3')" style="color: #2c3e50;">
+            <!-- 6. Flashcards -->
+            <button class="cap-card" onclick="openCapModal('studio_flashcards')">
                 <div class="cap-card-content">
-                    <span class="cap-card-emoji">🧭</span>
+                    <span class="cap-card-emoji">🗂️</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">תמיכה בלמידה עצמאית</span>
-                        <span class="cap-card-subtitle">Independent Learning</span>
+                        <span class="cap-card-title">כרטיסיות (Flashcards)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
-            
-            <button class="cap-card" onclick="openCapModal('students_4')" style="color: #2c3e50;">
+
+            <!-- 7. Quiz -->
+            <button class="cap-card" onclick="openCapModal('studio_quiz')">
                 <div class="cap-card-content">
                     <span class="cap-card-emoji">📝</span>
                     <div class="cap-card-text">
-                        <span class="cap-card-title">שימוש במערכת כחלק ממטלה</span>
-                        <span class="cap-card-subtitle">Assignment Integration</span>
+                        <span class="cap-card-title">בחנים (Quiz)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
                     </div>
                 </div>
-                <span class="cap-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
             </button>
+            
+            <!-- 8. Infographic -->
+            <button class="cap-card" onclick="openCapModal('studio_infographic')">
+                <div class="cap-card-content">
+                    <span class="cap-card-emoji">📊</span>
+                    <div class="cap-card-text">
+                        <span class="cap-card-title">אינפוגרפיקה (Infographic)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
+                    </div>
+                </div>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+            </button>
+
+            <!-- 9. Data Table -->
+            <button class="cap-card" onclick="openCapModal('studio_datatable')">
+                <div class="cap-card-content">
+                    <span class="cap-card-emoji">📈</span>
+                    <div class="cap-card-text">
+                        <span class="cap-card-title">טבלת נתונים (Data Table)</span>
+                        <span class="cap-card-subtitle">יחידה 4</span>
+                    </div>
+                </div>
+                <span class="cap-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+            </button>
+
         </div>
 
+    </div>
+
+    <!-- הערת עדכונים -->
+    <div style="text-align: center; margin-top: 10px; margin-bottom: 20px; color: #6c757d; font-size: 1.05rem;">
+        <p style="margin: 0; font-style: italic;">* חשוב לדעת: המערכת מתעדכנת תדיר ביכולות נוספות.</p>
     </div>
 
 </div>
@@ -484,211 +523,172 @@
         <!-- כותרת המודאל -->
         <div class="modal-header">
             <h3 id="cap-modal-title" class="modal-title">כותרת</h3>
-            <button onclick="closeCapModal()" class="modal-close-btn">&times;</button>
+            <button onclick="closeCapModal()" class="modal-close-btn" aria-label="סגור">&times;</button>
         </div>
         
         <!-- תוכן המודאל -->
         <div class="modal-content">
             
             <!-- מה מתקבל -->
-            <div style="margin-bottom: 25px;">
+            <div>
                 <h4 class="modal-section-title">מה מתקבל?</h4>
-                <ul id="cap-modal-received" style="color: #34495e; font-size: 1.1rem; padding-right: 25px; margin: 0; line-height: 1.6;"></ul>
+                <ul id="cap-modal-received" class="modal-list"></ul>
             </div>
             
             <!-- למה זה חשוב פדגוגית -->
-            <div style="margin-bottom: 30px;">
-                <h4 class="modal-section-title">למה זה חשוב פדגוגית?</h4>
-                <p id="cap-modal-pedagogy" style="color: #34495e; font-size: 1.1rem; font-style: italic; margin: 0; line-height: 1.6;"></p>
+            <div class="modal-highlight-box">
+                <h4 class="modal-highlight-title">למה זה חשוב פדגוגית?</h4>
+                <p id="cap-modal-pedagogy" class="modal-highlight-text"></p>
             </div>
             
-            <!-- שימוש מיידי (Callout) -->
-            <div style="background-color: #f0f7f3; border-right: 4px solid #339966; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
-                <h4 style="color: #155724; font-weight: bold; font-size: 1.15rem; margin-top: 0; margin-bottom: 8px;">שימוש מיידי בפועל</h4>
-                <p id="cap-modal-usage" style="color: #155724; font-size: 1.05rem; margin: 0; line-height: 1.6;"></p>
+            <!-- דוגמה פרקטית -->
+            <div style="margin-bottom: 25px;">
+                <h4 class="modal-section-title">💡 דוגמה לשימוש בפועל</h4>
+                <p id="cap-modal-usage" style="color: #34495e; font-size: 1.1rem; margin: 0; line-height: 1.6;"></p>
             </div>
             
-            <!-- תגיות -->
-            <div id="cap-modal-tags" style="display: flex; flex-wrap: wrap; gap: 10px; border-top: 1px solid #eef0f2; padding-top: 20px;"></div>
+            <!-- תגיות יחידה -->
+            <div id="cap-modal-tags" class="tag-container"></div>
             
         </div>
     </div>
 </div>
 
 <script>
-    // מאגר הנתונים לכרטיסיות
+    // מאגר הנתונים המעודכן לפי יחידות הקורס
     const capData = {
-        // צ'אט
-        "chat_1": {
-            title: "סיכום לשיעור",
-            received: ["סיכום מקיף ומובנה של המקורות שהועלו", "חלוקה לנושאים מרכזיים", "מיפוי מושגי מפתח"],
-            pedagogy: "ארגון ידע מקטין עומס קוגניטיבי ומאפשר לסטודנטים להתמקד בעיקר.",
-            usage: "העלאת מצגת ופרק מספר וקבלת דף 'סיכום מנהלים' לחלוקה בסוף ההרצאה.",
-            tags: ["חוסך זמן", "ארגון ידע"]
+        // עמודה 1: עבודה עם מקורות (יחידות 1-2)
+        "chat_summary": {
+            title: "סיכום ומיפוי ידע",
+            received: ["סיכום מקיף של מאמר או מצגת.", "נקודות עיקריות (Bullet points) המזוקקות מהטקסט."],
+            pedagogy: "ארגון המידע מפחית עומס קוגניטיבי, ומאפשר לכם להתרענן על ליבת החומר רגע לפני בניית מערך שיעור.",
+            usage: "בקשו מהצ'אט: 'סכם את המאמר ב-5 נקודות והוסף 2 מושגים מרכזיים להסבר בכיתה'.",
+            tags: ["יחידה 1", "ארגון ידע", "חוסך זמן"]
         },
-        "chat_2": {
-            title: "יצירת שאלות לסטודנטים",
-            received: ["בנק שאלות המבוססות ישירות על חומרי הקורס", "חלוקה לפי רמות קושי", "תשובות ונימוקים מהטקסט"],
-            pedagogy: "שאילת שאלות היא כלי קריטי לעידוד חשיבה פעילה ובדיקת הבנה בזמן אמת.",
-            usage: "יצירת שאלות מרובות-ברירה (קליקרים) לשימוש במהלך ההרצאה כדי לוודא שהסטודנטים איתך.",
-            tags: ["הערכה", "חוסך זמן"]
+        "chat_citations": {
+            title: "חקירה ואיתור ציטוטים",
+            received: ["תשובה ישירה לשאלה שלכם.", "מספרים עיליים (Citations) שלחיצה עליהם מפנה בדיוק לפסקה במקור."],
+            pedagogy: "רשת הביטחון שלכם כמרצים! זהו מנגנון המבטיח שהמידע נשען על מקור אקדמי מאומת ומונע 'הזיות' של ה-AI.",
+            usage: "סטודנט שלח שאלה מורכבת במייל. במקום לחפש במאמר, שאלו את המחברת ושלחו תשובה המגובה במראה מקום מדויק.",
+            tags: ["יחידה 1", "אמינות אקדמית", "Citations"]
         },
-        "chat_3": {
-            title: "הסבר מושגים מורכבים",
-            received: ["פישוט הגדרות טכניות קשות", "שימוש באנלוגיות מותאמות", "קישור להקשר הקורס"],
-            pedagogy: "הנגשת מושגים מופשטים באמצעות הקשרים מוכרים משפרת את הזיכרון לטווח ארוך.",
-            usage: "בקשה מהכלי להסביר מושג הנדסי או תיאורטי סבוך 'כאילו הייתי סטודנט שנה א'.",
-            tags: ["לסטודנטים", "הנגשת ידע"]
+        "chat_compare": {
+            title: "השוואה וסינתזה",
+            received: ["ניתוח רוחבי המשלב בין שני מאמרים או יותר.", "זיהוי נקודות דמיון, סתירות או פערי ידע."],
+            pedagogy: "המעבר האמיתי מ'הבנת טקסט' ל'חשיבה גבוהה'. מאפשר לייצר שיעור שמציג ריבוי גישות ומפתח חשיבה ביקורתית.",
+            usage: "העלו 2 מאמרים ושאלו: 'השווה בין המקורות: מה הגישה של כל מחבר, ומה נקודת המחלוקת המרכזית ביניהם?'.",
+            tags: ["יחידה 2", "סינתזה", "חשיבה ביקורתית"]
         },
-        "chat_4": {
-            title: "השוואה בין מקורות",
-            received: ["טבלת השוואה או תיאור הבדלים", "זיהוי סתירות בין מחברים", "סינתזה של רעיונות משותפים"],
-            pedagogy: "מפתח חשיבה ביקורתית ויכולת ניתוח גבוהה של חומר אקדמי.",
-            usage: "העלאת שני מאמרים בנושא דומה וקבלת סיכום של נקודות המחלוקת ביניהם.",
-            tags: ["חשיבה ביקורתית", "ארגון ידע"]
+        "chat_filter": {
+            title: "סינון ומיקוד מקורות",
+            received: ["התעלמות משאר חומרי הקורס.", "תשובה המבוססת אך ורק על המאמר הספציפי שסימנתם."],
+            pedagogy: "מונע מה-AI 'לערבב' מידע בין הרצאות שונות, ומבטיח שהתשובה ממוקדת בדיוק בהקשר ההוראה הנדרש כעת.",
+            usage: "סימון ב-V רק של 'מצגת שיעור 3' ובקשה: 'נסח לי שאלת חזרה פותחת לשיעור הבא על סמך המצגת הזו בלבד'.",
+            tags: ["יחידה 2", "מיקוד", "שליטה בידע"]
         },
-        "chat_5": {
-            title: "מענה לשאלה מבוססת מקור",
-            received: ["תשובה מדויקת המסתמכת רק על המקורות", "ציון מראה מקום מדויק (Citations)", "הימנעות מהמצאות של ה-AI"],
-            pedagogy: "מבטיח אמינות אקדמית ומונע בלבול בקרב הסטודנטים.",
-            usage: "מרצה המשתמש בכלי כ'עוזר הוראה' למציאת תשובה מהירה לסטודנט מתוך סילבוס או מקראה עמוסה.",
-            tags: ["דיוק", "חוסך זמן"]
-        },
-
-        // סטודיו
-        "studio_1": {
-            title: "סקירה קולית (Audio Overview)",
-            received: ["שיחה קולית המסכמת את החומר", "דיאלוג קולח בין שתי דמויות", "דגשים על הנקודות המעניינות בחומר"],
-            pedagogy: "מולטי-מודליות: הנגשת החומר בפורמט שמע המותאם ללמידה בדרכים (למידה שמיעתית).",
-            usage: "יצירת 'סיכום קולי' למאמר (פודקאסט), המאפשר לסטודנטים להבין את הרעיון הכללי בהאזנה בדרך לקמפוס.",
-            tags: ["נגישות", "לסטודנטים"]
-        },
-        "studio_2": {
-            title: "מפת חשיבה (Mind Map)",
-            received: ["ייצוג ויזואלי של הקשרים בין נושאים", "מפת מושגים היררכית", "אשכולות של תחומי משנה"],
-            pedagogy: "למידה ויזואלית מסייעת לסטודנטים לראות את 'התמונה הגדולה' ולא רק פרטים בודדים.",
-            usage: "יצירת מפת חשיבה של נושא הקורס לשימוש כעזר ויזואלי בשקף הפתיחה של השיעור הראשון.",
-            tags: ["ויזואליזציה", "ארגון ידע"]
-        },
-        "studio_3": {
-            title: "דוחות וסיכומים (Reports)",
-            received: ["מסמך טקסטואלי מורחב ומאורגן", "אינטגרציה של מידע ממספר מקורות", "חלוקה לראשי פרקים"],
-            pedagogy: "חיבור רעיונות לכדי נרטיב אחד מסודר עוזר לסטודנטים שניגשים לבחינה ולעיבוד חומר רב.",
-            usage: "יצירת חומר רקע עשיר לחלוקה כהכנה לשיעור, או מסמך 'מנהלים' המאגד את כל מאמרי הסמסטר.",
-            tags: ["סיכום", "לסטודנטים"]
-        },
-        "studio_4": {
-            title: "כרטיסיות למידה (Flashcards)",
-            received: ["כרטיסיות אינטראקטיביות (שאלה בצד אחד, תשובה בשני)", "אנימציית היפוך", "מיקוד במונחים ותאריכים"],
-            pedagogy: "תמיכה מוכחת מחקרית בתהליכי 'שליפה פעילה' (Active Recall) לשינון ידע בסיסי.",
-            usage: "יצירת מאגר מונחי יסוד משחקי שהסטודנטים חייבים להכיר בעל-פה לקראת מבחן המושגים.",
-            tags: ["לסטודנטים", "שינון"]
-        },
-        "studio_5": {
-            title: "בוחן (Quiz)",
-            received: ["יצירה אוטומטית של שאלות אמריקאיות", "הסבר ומשוב לכל תשובה נכונה", "מסיחים (תשובות שגויות) מוכנים"],
-            pedagogy: "הערכה מעצבת מאפשרת לסטודנט לזהות פערים בלמידה מוקדם ככל האפשר.",
-            usage: "יצירת בוחן תרגול קצר להעלאה ל-Moodle או כ'כרטיס יציאה' בסיום השיעור.",
-            tags: ["הערכה", "לסטודנטים"]
-        },
-        "studio_6": {
-            title: "שלד למצגת (Slide Deck)",
-            received: ["שלד (Outline) טקסטואלי המחולק לשקופיות", "הצעות לטקסט שיופיע על המסך", "קריינות (הערות) למרצה"],
-            pedagogy: "תכנון נרטיב וזרימה לוגית טרם עיצוב המצגת, משפר דרמטית את איכות העברת המסר בכיתה.",
-            usage: "בניית הרצאה חדשה מאפס מתוך אסופת מאמרים, והעתקת הטקסט ל-PowerPoint מעוצב.",
-            tags: ["תכנון שיעור", "חוסך זמן"]
-        },
-        "studio_7": {
-            title: "תקציר וידאו (Video Overview)",
-            received: ["סרטון וידאו קצר מבוסס AI", "ויזואליה אוטומטית", "קריינות או כתוביות (בהתאם לזמינות המערכת)"],
-            pedagogy: "וידאו קצר בתחילת שיעור מעורר סקרנות, מקרקע את הקשב ומשמש כ'שבירת קרח' מושלמת.",
-            usage: "הקרנת טיזר ויזואלי בן דקה בתחילת נושא חדש בכיתה כדי למשוך את תשומת לב הסטודנטים.",
-            tags: ["מולטי-מודליות", "מעורבות"]
-        },
-        "studio_8": {
-            title: "אינפוגרפיקה (Infographic)",
-            received: ["קובץ תמונה (PNG/JPG)", "סיכום חזותי או תרשים זרימה", "שילוב אלמנטים גרפיים וטקסט"],
-            pedagogy: "המרת טקסט מורכב לתוצר חזותי תומכת בלומדים ויזואליים ומארגנת שלבים של תהליכים ארוכים.",
-            usage: "יצירת פוסטר השוואתי למודלים מתוך החומר או הדפסת תרשים זרימה לחלוקה כ'דף עזר'.",
-            tags: ["ויזואליזציה", "לסטודנטים"]
-        },
-        "studio_9": {
-            title: "טבלת נתונים (Data Table)",
-            received: ["טבלה טקסטואלית מובנית", "ארגון נתונים לפי עמודות רלוונטיות", "השוואה נקודתית"],
-            pedagogy: "טבלאות השוואה מארגנות ידע עמוס, מזקקות את 'השורה התחתונה' ומפחיתות חרדה לפני בחינות.",
-            usage: "השוואה בין מספר גישות, היסטוריונים או תיאוריות, והעתקה ישירה לקובץ Word/Excel.",
-            tags: ["ארגון ידע", "חוסך זמן"]
+        "chat_notes": {
+            title: "ניהול תובנות בפתקיות",
+            received: ["שמירת תשובות איכותיות מהצ'אט כפתקית צדדית.", "בניית לוח השראה (Notes Board) של הקורס."],
+            pedagogy: "מאפשר לאסוף 'פניני ידע' תוך כדי השיחה עם המודל, ולארגן אותם לכדי מהלך שיעור מסודר ורציף.",
+            usage: "קיבלתם שאלת מבחן טובה מהצ'אט? לחצו על סמל הנעץ (Add Note) כדי לשמור אותה בצד, והמשיכו לחקור את החומר.",
+            tags: ["יחידה 2", "ניהול ידע", "מערך שיעור"]
         },
 
-        // סטודנטים
-        "students_1": {
-            title: "שיתוף צ'אט בלבד",
-            received: ["קישור ישיר לשיחה ספציפית עם הכלי", "הצגת הדרך שבה המרצה שואל שאלות", "שיתוף תובנות נבחרות ללא המקורות"],
-            pedagogy: "מידול (Modeling): המרצה מדגים לסטודנטים איך לשאול את ה-AI שאלות מקצועיות נכונות.",
-            usage: "שיתוף שיחה שבה המרצה 'מאתגר' את הטקסט, כדי להוות השראה לחשיבה ביקורתית.",
-            tags: ["מידול", "לסטודנטים"]
+        // עמודה 3: סטודיו (יחידה 4) - 9 פיצ'רים
+        "studio_audio": {
+            title: "🎧 סקירה קולית (Audio Overview)",
+            received: ["קובץ שמע (כמו פודקאסט קצר) המסכם את חומרי המחברת בשיחה בין מנחים."],
+            pedagogy: "מולטי-מודליות: הנגשת החומר לאפיק השמיעתי, מצוין לסטודנטים שלומדים טוב יותר מהאזנה.",
+            usage: "הפיקו תקציר קולי ממאמר מסובך ושלחו לסטודנטים להאזנה בנסיעה כהכנה מקדימה (Pre-reading) לשיעור.",
+            tags: ["יחידה 4", "הנגשה", "פודקאסט"]
         },
-        "students_2": {
-            title: "שיחה של סטודנטים עם חומרים",
-            received: ["סביבה בטוחה לסטודנטים לשאול שאלות", "תשובות מבוססות על המקורות שהמרצה אישר", "צמצום פערים אישיים"],
-            pedagogy: "מאפשר למידה מותאמת אישית בקצב של הסטודנט, ללא חשש 'לשאול שאלות טיפשיות' בכיתה.",
-            usage: "יצירת מחברת משותפת לקראת המבחן שבה הסטודנטים יכולים 'לחקור' את כל חומרי הסמסטר.",
-            tags: ["למידה אישית", "לסטודנטים"]
+        "studio_slidedeck": {
+            title: "🎞️ שלד למצגת (Slide Deck)",
+            received: ["סדרת תמונות המעוצבות כשקופיות, המשלבות טקסט וויזואליה מהמקורות."],
+            pedagogy: "בניית לוח השראה (Storyboard) ונרטיב ויזואלי לפני שניגשים לעצב את מצגת הקורס הסופית.",
+            usage: "הפקת מצגת בסיסית ממאמר חדש כדי לארגן במהירות את ראשי הפרקים להרצאה הקרובה.",
+            tags: ["יחידה 4", "מצגות", "תכנון שיעור"]
         },
-        "students_3": {
-            title: "תמיכה בלמידה עצמאית",
-            received: ["כלים לסיכום עצמי של מאמרים", "אפשרות לביקורת על הבנה אישית", "הכוונה למקורות הרלוונטיים"],
-            pedagogy: "פיתוח לומד עצמאי המסוגל להתמודד עם טקסטים אקדמיים מורכבים בכוחות עצמו.",
-            usage: "מתן משימה לסטודנטים לסכם מאמר מורכב באמצעות הכלי ולהגיש רפלקציה על התהליך.",
-            tags: ["למידה עצמאית", "אקדמי"]
+        "studio_video": {
+            title: "🎥 תקציר וידאו (Video)",
+            received: ["סרטון וידאו קצר מבוסס AI המציג את נושא המקורות (כולל קריינות ותמונות אווירה)."],
+            pedagogy: "שבירת קרח ויצירת סקרנות (Teaser) הממקדת את קשב הסטודנטים בתחילת נושא חדש.",
+            usage: "הקרנת סרטון של דקה שמציג מקרה בוחן (Case Study) רגע לפני פתיחת דיון סוער בכיתה.",
+            tags: ["יחידה 4", "וידאו", "מעורבות לומדים"]
         },
-        "students_4": {
-            title: "שימוש במערכת כחלק ממטלה",
-            received: ["שילוב הכלי כחלק אינטגרלי מהתהליך הלימודי", "בדיקת תוצרי AI מול הבנה אנושית", "מטלות מורכבות יותר"],
-            pedagogy: "הכנת הסטודנטים לעבודה בעולם האמיתי שבו AI הוא כלי עבודה סטנדרטי (אוריינות AI).",
-            usage: "מטלה שבה הסטודנט מתבקש להפיק סיכום מהכלי ואז לכתוב פסקת ביקורת: מה הכלי פספס או במה הוא טעה.",
-            tags: ["הערכה", "אוריינות AI"]
+        "studio_mindmap": {
+            title: "🔀 מפת חשיבה (Mind Map)",
+            received: ["תרשים עץ דינמי המארגן את המושגים המרכזיים ותתי-הנושאים מהמקורות."],
+            pedagogy: "הצגת 'התמונה הגדולה' ללומדים חזותיים ויצירת סכמה קוגניטיבית שמקלה על הבנת הקשרים.",
+            usage: "הצגת מפת חשיבה בתחילת קורס כדי להראות איך כל הנושאים בסילבוס מתחברים זה לזה.",
+            tags: ["יחידה 4", "ויזואליזציה", "ארגון ידע"]
+        },
+        "studio_reports": {
+            title: "📄 דוחות ומדריכי למידה",
+            received: ["מסמך טקסטואלי מובנה (כגון Study guide, Briefing doc, או Blog post)."],
+            pedagogy: "ארגון כמויות גדולות של מידע לפורמט קריא ומסודר. מעולה ככלי חזרה אינטגרטיבי.",
+            usage: "בסוף הסמסטר, הפיקו 'מדריך למידה' המאגד את המושגים והשאלות מכלל מצגות הקורס.",
+            tags: ["יחידה 4", "סיכום הקורס", "Study Guide"]
+        },
+        "studio_flashcards": {
+            title: "🗂️ כרטיסיות (Flashcards)",
+            received: ["אוסף אינטראקטיבי של כרטיסיות מתהפכות: מושג בצד אחד, הגדרה מדויקת בצד שני."],
+            pedagogy: "למידה מבוססת 'שליפה פעילה' (Active Recall) ותרגול מרווח של ידע דקלרטיבי.",
+            usage: "הפקת חפיסת כרטיסיות לשינון חוקים, תיאוריות או תאריכים, ושיתופה לפני בחינת האמצע.",
+            tags: ["יחידה 4", "שינון וזיכרון", "תרגול פעיל"]
+        },
+        "studio_quiz": {
+            title: "📝 בחנים (Quiz)",
+            received: ["שאלון רב-ברירה (אמריקאי) אינטראקטיבי עם אפשרות לבדיקה אוטומטית והסברים."],
+            pedagogy: "הערכה מעצבת לבדיקת הבנה מהירה (Formative Assessment), תוך חיסכון בניסוח מסיחים מבלבלים.",
+            usage: "בניית בוחן פתע קצר לתרגול בכיתה, כ'כרטיס יציאה' (Exit Ticket) בסוף שיעור עמוס.",
+            tags: ["יחידה 4", "הערכה", "בחנים"]
+        },
+        "studio_infographic": {
+            title: "📊 אינפוגרפיקה",
+            received: ["קובץ תמונה המציג תרשים, השוואה או תהליך שלבים בצורה חזותית אסתטית."],
+            pedagogy: "סיכום ויזואלי מהיר של נושאים מורכבים המשמש כ'דף נוסחאות' רעיוני לסטודנטים.",
+            usage: "יצירת אינפוגרפיקה שמשווה בין שתי תיאוריות מתחרות לחלוקה כדף סיכום מרכז.",
+            tags: ["יחידה 4", "הוראה חזותית", "אינפוגרפיקה"]
+        },
+        "studio_datatable": {
+            title: "📈 טבלת נתונים",
+            received: ["טבלה טקסטואלית המארגנת מידע רוחבי לפי עמודות (כגון תאריכים, יתרונות וחסרונות)."],
+            pedagogy: "ארגון והשוואת נתונים מרובים בתבנית ברורה להפחתת העומס הקוגניטיבי וקלות השוואה.",
+            usage: "יצירת טבלה המרכזת את כל המחקרים שהוזכרו בקורס, מסודרת לפי שנת פרסום ומסקנה מחקרית.",
+            tags: ["יחידה 4", "השוואת נתונים", "טבלאות"]
+        },
+
+        // עמודה 2: סטודנטים ושיתוף (יחידה 3)
+        "students_configure": {
+            title: "הגדרת אישיות הצ'אט",
+            received: ["הנחיה קבועה (Configure Chat - Custom) המגדירה ל-AI כיצד להגיב לסטודנטים."],
+            pedagogy: "מונע מהסטודנט להשתמש במערכת כ'מכונת תשובות'. הופך את ה-AI למתרגל קפדן שדורש חשיבה.",
+            usage: "הגדירו: 'אל תיתן תשובות סופיות. ענה לשאלות על ידי הכוונת הסטודנט לפסקה הרלוונטית במאמר'.",
+            tags: ["יחידה 3", "למידה פעילה", "Configure Chat"]
+        },
+        "students_customise": {
+            title: "עיצוב והודעת פתיחה",
+            received: ["תמונת נושא למחברת.", "הודעת 'ברוכים הבאים' הכוללת את הנחיות המטלה."],
+            pedagogy: "מייצר סביבת למידה עוטפת הממקדת את הסטודנט במשימה האקדמית מיד עם כניסתו.",
+            usage: "כתיבת הודעת פתיחה (Customise Notebook): 'במחברת זו עליכם להשוות בין שני המאמרים ולהגיש סיכום קצר ב-Moodle'.",
+            tags: ["יחידה 3", "סביבת למידה", "מעטפת הקורס"]
+        },
+        "students_share_full": {
+            title: "שיתוף מחברת מלאה",
+            received: ["קישור למחברת הכוללת גישה לכל קובצי המקור בצד המסך ולתוצרי הסטודיו."],
+            pedagogy: "שקיפות וחקירה מלאה: מעודד את הסטודנטים לקרוא את הטקסטים המקוריים במקביל לעבודת ה-AI.",
+            usage: "מתאים לסמינריונים או לעבודות חקר שבהם הסטודנט נדרש לקרוא, לבקר ולצטט את המקורות ישירות.",
+            tags: ["יחידה 3", "שיתוף", "למידת חקר"]
+        },
+        "students_share_chat": {
+            title: "שיתוף תצוגת צ'אט (Chat View)",
+            received: ["קישור המסתיר את חומרי המקור ומשאיר רק ממשק צ'אט נקי."],
+            pedagogy: "מיקוד בחוויית השיחה בלבד, הפחתת הסחות דעת חזותיות, והכוונת קשב ישירה לתרגול.",
+            usage: "מתאים למקרים שבהם יצרתם צ'אט מתרגל, ואתם רוצים שהסטודנטים רק ישאלו שאלות הבנה בלי לראות את הקבצים שהעליתם.",
+            tags: ["יחידה 3", "מיקוד הקשב", "Chat View"]
         }
     };
-
-    // פונקציות פתיחה וסגירה של המודאל
-    function openCapModal(id) {
-        const item = capData[id];
-        if(!item) return;
-        
-        // עדכון התוכן
-        document.getElementById('cap-modal-title').innerText = item.title;
-        document.getElementById('cap-modal-received').innerHTML = item.received.map(t => `<li style="margin-bottom: 8px;">${t}</li>`).join('');
-        document.getElementById('cap-modal-pedagogy').innerText = item.pedagogy;
-        document.getElementById('cap-modal-usage').innerText = item.usage;
-        
-        // עדכון תגיות
-        document.getElementById('cap-modal-tags').innerHTML = item.tags.map(t => 
-            `<span class="tag-style"># ${t}</span>`
-        ).join('');
-        
-        // הצגת המודאל
-        const modal = document.getElementById('cap-modal');
-        modal.classList.add('active');
-        document.body.classList.add('modal-open');
-    }
-
-    function closeCapModal(event) {
-        // סגירה רק אם לחצו על הרקע הכהה או על כפתור הסגירה
-        if (event && event.target !== event.currentTarget) return;
-        
-        const modal = document.getElementById('cap-modal');
-        modal.classList.remove('active');
-        document.body.classList.remove('modal-open');
-    }
-
-    // סגירה עם מקש Escape
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeCapModal();
-        }
-    });
 </script>
-
 </body>
 </html>
