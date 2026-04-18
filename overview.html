@@ -594,7 +594,7 @@
             tags: ["יחידה 2", "ניהול ידע", "מערך שיעור"]
         },
 
-        // עמודה 3: סטודיו (יחידה 4) - 9 פיצ'רים
+        // עמודה 2: הסטודיו (יחידה 4) - 9 פיצ'רים
         "studio_audio": {
             title: "🎧 סקירה קולית (Audio Overview)",
             received: ["קובץ שמע (כמו פודקאסט קצר) המסכם את חומרי המחברת בשיחה בין מנחים."],
@@ -659,7 +659,7 @@
             tags: ["יחידה 4", "השוואת נתונים", "טבלאות"]
         },
 
-        // עמודה 2: סטודנטים ושיתוף (יחידה 3)
+        // עמודה 3: סטודנטים ושיתוף (יחידה 3)
         "students_configure": {
             title: "הגדרת אישיות הצ'אט",
             received: ["הנחיה קבועה (Configure Chat - Custom) המגדירה ל-AI כיצד להגיב לסטודנטים."],
@@ -689,6 +689,36 @@
             tags: ["יחידה 3", "מיקוד הקשב", "Chat View"]
         }
     };
+
+    // פונקציות המודאל
+    window.openCapModal = function(id) {
+        const item = capData[id];
+        if(!item) return;
+        
+        document.getElementById('cap-modal-title').innerHTML = item.title;
+        document.getElementById('cap-modal-received').innerHTML = item.received.map(t => `<li style="margin-bottom: 8px;">${t}</li>`).join('');
+        document.getElementById('cap-modal-pedagogy').innerText = item.pedagogy;
+        document.getElementById('cap-modal-usage').innerText = item.usage;
+        
+        document.getElementById('cap-modal-tags').innerHTML = item.tags.map(t => 
+            `<span class="tag-style"># ${t}</span>`
+        ).join('');
+        
+        const modal = document.getElementById('cap-modal');
+        modal.classList.add('active');
+        document.body.classList.add('modal-open');
+    }
+
+    window.closeCapModal = function(event) {
+        if (event && event.target !== event.currentTarget) return;
+        const modal = document.getElementById('cap-modal');
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') closeCapModal();
+    });
 </script>
 </body>
 </html>
